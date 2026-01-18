@@ -1,0 +1,42 @@
+{
+  "name": "diocr-viewer-electron",
+  "productName": "diocr-viewer-electron",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "./out/main/index.js",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [],
+  "author": {
+    "name": "JHuang",
+    "email": "jhuang0532@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^3.0.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config": "^1.0.2",
+    "@rushstack/eslint-patch": "^1.10.3",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "electron": "35.7.5",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.26.0",
+    "prettier": "^3.3.2",
+    "vite": "^5.3.1",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-static-copy": "^2.2.0",
+    "vue": "^3.4.30"
+  }
+}
