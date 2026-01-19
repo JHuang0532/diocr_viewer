@@ -57,6 +57,28 @@ function createWindow() {
       return { success: false, error: error.message }
     }
   })
+
+  ipcMain.handle('get-directory-details', async (event, rootDirectory, selectedDir) => {
+    try {
+      const dirPath = path.join(rootDirectory, selectedDir)
+      const jsonFilePath = path.join(dirPath, 'simple_results.json')
+      const imagePath = path.join(dirPath, 'bbox_mask_preview.jpg')
+
+      // Read and parse the JSON file
+      const jsonData = await fs.promises.readFile(jsonFilePath, 'utf-8')
+      const ocrData = JSON.parse(jsonData)
+
+      // Read the image file and convert it to a data URL
+      const imageBuffer = await fs.promises.readFile(imagePath)
+      const imageBase64 = imageBuffer.toString('base64')
+      const imageUrl = `data:image/jpeg;base64,${imageBase64}`
+
+      return { success: true, details: { ocrData: ocrData.ocr_data, imageUrl: imageUrl } }
+    } catch (error) {
+      console.error('Failed to get directory details:', error)
+      return { success: false, error: error.message }
+    }
+  })
 }
 
 // This method will be called when Electron has finished

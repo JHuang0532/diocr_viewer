@@ -4,7 +4,10 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   loadDirectory: (rootDirectory) => ipcRenderer.invoke('load-directory', rootDirectory),
-  onImageDirectoriesLoaded: (callback) => ipcRenderer.on('image-directories-loaded', (_event, value) => callback(value))
+  getDirectoryDetails: (rootDirectory, selectedDir) =>
+    ipcRenderer.invoke('get-directory-details', rootDirectory, selectedDir),
+  onImageDirectoriesLoaded: (callback) =>
+    ipcRenderer.on('image-directories-loaded', (_event, value) => callback(value))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

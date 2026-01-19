@@ -20,14 +20,20 @@
 
       <section class="content-panel image-preview">
         <h2>Image Preview</h2>
-        <!-- Image will be displayed here -->
-        <p>Select a directory from the left to see the preview.</p>
+        <img v-if="selectedDirDetails && selectedDirDetails.imageUrl" :src="selectedDirDetails.imageUrl" alt="Preview" />
+        <p v-else>Select a directory from the left to see the preview.</p>
       </section>
 
       <aside class="sidebar right-panel">
         <h2>OCR Results</h2>
-        <!-- OCR results will be displayed here -->
-        <p>OCR results will appear here.</p>
+        <div v-if="selectedDirDetails && selectedDirDetails.ocrData">
+          <ul>
+            <li v-for="(value, key) in selectedDirDetails.ocrData" :key="key">
+              <strong>{{ key }}:</strong> {{ value[0].text }} (Confidence: {{ (value[0].ocr_confidence * 100).toFixed(2) }}%)
+            </li>
+          </ul>
+        </div>
+        <p v-else>OCR results will appear here.</p>
       </aside>
     </main>
   </div>
@@ -41,6 +47,7 @@ export default {
       rootDirectory: '',
       imageDirectories: [],
       selectedDirectory: null,
+      selectedDirDetails: null, // To store image and OCR data
       ipcRemoval: null // To store the IPC listener cleanup function
     };
   },
@@ -49,6 +56,7 @@ export default {
     this.ipcRemoval = window.api.onImageDirectoriesLoaded((directories) => {
       this.imageDirectories = directories;
       this.selectedDirectory = null; // Reset selection when new directories are loaded
+      this.selectedDirDetails = null; // Clear details
     });
   },
   beforeUnmount() {
@@ -69,10 +77,21 @@ export default {
         this.imageDirectories = [];
       }
     },
-    selectDirectory(dir) {
+    async selectDirectory(dir) {
       this.selectedDirectory = dir;
       console.log('Selected directory:', dir);
-      // TODO: Implement loading image and JSON for the selected directory
+      try {
+        const result = await window.api.getDirectoryDetails(this.rootDirectory, dir);
+        if (result.success) {
+          this.selectedDirDetails = result.details;
+        } else {
+          console.error('Failed to get directory details:', result.error);
+          this.selectedDirDetails = null;
+        }
+      } catch (error) {
+        console.error('Error getting directory details:', error);
+        this.selectedDirDetails = null;
+      }
     },
   },
 };

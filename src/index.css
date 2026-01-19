@@ -82,6 +82,7 @@ html, body {
 .sidebar.right-panel {
   border-right: none; /* No border on the rightmost panel */
   border-left: 1px solid #3a3f4b;
+  width: 350px; /* Give more space for results */
 }
 
 .content-panel {
@@ -89,6 +90,9 @@ html, body {
   background-color: #282c34;
   padding: 15px;
   overflow-y: auto; /* Scroll for content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 h2 {
@@ -109,6 +113,7 @@ h2 {
   cursor: pointer;
   border-bottom: 1px solid #3a3f4b;
   transition: background-color 0.2s ease-in-out;
+  word-wrap: break-word;
 }
 
 .directory-list li:last-child {
@@ -130,4 +135,33 @@ h2 {
   color: #9da5b4;
   text-align: center;
   margin-top: 20px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.right-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.right-panel li {
+  padding: 10px 5px;
+  border-bottom: 1px solid #3a3f4b;
+  font-size: 14px;
+}
+
+.right-panel li:last-child {
+  border-bottom: none;
+}
+
+.right-panel li strong {
+  color: #98c379; /* A green color for field names */
+  display: block;
+  margin-bottom: 5px;
 }
