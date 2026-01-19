@@ -3,6 +3,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
+  // Folder selection API
+  selectFolder: () => ipcRenderer.invoke('select-folder'),
+  
   // New simplified API
   getDirectories: (rootPath) => ipcRenderer.invoke('get-directories', rootPath),
   getOCRData: (rootPath, dirName) => ipcRenderer.invoke('get-ocr-data', rootPath, dirName),

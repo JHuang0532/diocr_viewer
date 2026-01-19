@@ -1,139 +1,228 @@
 <template>
-  <div style="height: 100vh; display: flex; flex-direction: column; font-family: Arial, sans-serif;">
-    <!-- Header -->
-    <div style="display: flex; padding: 12px; gap: 10px; border-bottom: 1px solid #ddd; background: white;">
-      <input 
-        type="text" 
-        v-model="rootPath" 
-        placeholder="請輸入根目錄路徑..." 
-        style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" 
-      />
-      <button 
-        @click="loadDirectory" 
-        style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;"
-      >
-        確認載入
-      </button>
-    </div>
-
-    <!-- Main Container -->
-    <div style="flex: 1; display: flex; overflow: hidden;">
-      <!-- Left Panel -->
-      <div style="width: 250px; background: #f8f9fa; border-right: 1px solid #ddd; display: flex; flex-direction: column;">
-        <div style="margin: 0; padding: 12px; background: #e9ecef; border-bottom: 1px solid #ddd; font-weight: bold;">
-          Image Directories
-        </div>
-        <div style="flex: 1; overflow-y: auto;">
-          <div 
-            v-for="item in directoryList" 
-            :key="item" 
-            :style="{
-              padding: '10px 12px',
-              cursor: 'pointer',
-              borderBottom: '1px solid #eee',
-              background: selectedDir === item ? '#007bff' : 'transparent',
-              color: selectedDir === item ? 'white' : 'black'
-            }"
-            @click="handleSelectDir(item)"
-            @mouseover="$event.target.style.background = selectedDir === item ? '#007bff' : '#e9ecef'"
-            @mouseout="$event.target.style.background = selectedDir === item ? '#007bff' : 'transparent'"
-          >
-            {{ item }}
-          </div>
-        </div>
+  <div class="app-container">
+    <header class="top-nav">
+      <div class="path-input-container">
+        <input type="text" :value="rootPath" readonly placeholder="請點擊右側按鈕選擇 OCR 結果目錄..." />
+        <button class="select-btn" @click="handleSelectFolder">選擇目錄並載入</button>
       </div>
+    </header>
 
-      <!-- Right Panel -->
-      <div style="flex: 1; display: flex; flex-direction: column;">
-        <!-- Image Preview -->
-        <div style="flex: 1; display: flex; flex-direction: column; border-bottom: 1px solid #ddd;">
-          <div style="margin: 0; padding: 12px; background: #e9ecef; border-bottom: 1px solid #ddd; font-weight: bold;">
-            imgpreview
-          </div>
-          <div style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
-            <img 
-              v-if="selectedData" 
-              :src="previewImageBase64" 
-              style="max-width: 100%; max-height: 100%; object-fit: contain;" 
-            />
-            <div v-else style="text-align: center; color: #999;">請從左側選擇目錄</div>
-          </div>
+    <main class="main-content">
+      <aside class="sidebar section-card">
+        <h3 class="panel-title">Image Directories</h3>
+        <div class="list-wrapper">
+          <ul class="directory-list">
+            <li 
+              v-for="dir in directories" 
+              :key="dir" 
+              :class="{ active: selectedDir === dir }"
+              @click="loadData(dir)"
+            >
+              <span class="folder-icon">📁</span> {{ dir }}
+            </li>
+          </ul>
         </div>
+      </aside>
 
-        <!-- OCR Results -->
-        <div style="height: 300px; display: flex; flex-direction: column;">
-          <div style="margin: 0; padding: 12px; background: #e9ecef; border-bottom: 1px solid #ddd; font-weight: bold;">
-            textList
-          </div>
-          <div style="flex: 1; overflow-y: auto; padding: 10px;">
-            <div v-if="selectedData">
-              <div v-for="(dataArr, key) in selectedData.ocr_data" :key="key" style="margin-bottom: 15px; padding: 8px; border: 1px solid #eee; border-radius: 4px;">
-                <div style="font-weight: bold; color: #007bff; margin-bottom: 5px;">{{ formatFieldName(key) }}:</div>
-                <div style="margin-bottom: 3px;">{{ dataArr[0].text }}</div>
-                <div style="font-size: 12px; color: #666;">[{{ (dataArr[0].ocr_confidence * 100).toFixed(1) }}%]</div>
-              </div>
+      <section class="preview-column section-card">
+        <h3 class="panel-title">imgpreview</h3>
+        <div class="image-scroll-box" v-if="previewBase64">
+          <img :src="`data:image/jpeg;base64,${previewBase64}`" class="preview-img" />
+        </div>
+        <div v-else class="empty-placeholder">請從左側選擇檔案</div>
+      </section>
+
+      <section class="results-column section-card">
+        <h3 class="panel-title">textList</h3>
+        <div class="results-scroll-box" v-if="ocrData">
+          <div v-for="(val, key) in ocrData.ocr_data" :key="key" class="ocr-item-group">
+            <label class="field-key">{{ key }}:</label>
+            <div v-for="(item, idx) in val" :key="idx" class="ocr-value-card">
+              <p class="ocr-text">{{ item.text }}</p>
+              <p class="ocr-meta">信心度: <span class="conf-tag">{{ (item.ocr_confidence * 100).toFixed(1) }}%</span></p>
             </div>
-            <div v-else style="text-align: center; color: #999; padding: 20px;">OCR 結果將顯示在此</div>
           </div>
         </div>
-      </div>
-    </div>
+        <div v-else class="empty-placeholder">暫無 OCR 資料</div>
+      </section>
+    </main>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App',
-  data() {
-    return {
-      rootPath: '',
-      directoryList: [],
-      selectedDir: null,
-      selectedData: null,
-      previewImageBase64: ''
-    }
-  },
-  methods: {
-    async loadDirectory() {
-      if (!this.rootPath) return
-      try {
-        const list = await window.api.getDirectories(this.rootPath)
-        this.directoryList = list
-      } catch (error) {
-        console.error('Error loading directory:', error)
-        alert('無法載入目錄')
-      }
-    },
+<script setup>
+import { ref } from 'vue'
 
-    async handleSelectDir(dirName) {
-      this.selectedDir = dirName
-      try {
-        const data = await window.api.getOCRData(this.rootPath, dirName)
-        this.selectedData = data
-        this.previewImageBase64 = `data:image/jpeg;base64,${data.previewImg}`
-      } catch (error) {
-        console.error('Error loading OCR data:', error)
-        alert('無法載入數據')
-      }
-    },
+const rootPath = ref('')
+const directories = ref([])
+const selectedDir = ref('')
+const previewBase64 = ref('')
+const ocrData = ref(null)
 
-    formatFieldName(fieldName) {
-      return fieldName.replace(/_\d+$/, '').replace(/_/g, ' ')
-    }
+const handleSelectFolder = async () => {
+  // 呼叫 Electron 提供的選擇資料夾 API
+  const path = await window.api.selectFolder()
+  if (path) {
+    rootPath.value = path
+    // 取得該路徑下的所有子資料夾清單
+    directories.value = await window.api.getDirectories(path)
+  }
+}
+
+const loadData = async (dir) => {
+  selectedDir.value = dir
+  // 取得對應資料夾內的 json 與圖片 base64
+  const result = await window.api.getOCRData(rootPath.value, dir)
+  if (result) {
+    previewBase64.value = result.imgBase64
+    ocrData.value = result.jsonData
   }
 }
 </script>
 
 <style scoped>
-/* 清除全域樣式衝突 */
-* {
-  box-sizing: border-box !important;
-  margin: 0 !important;
-  padding: 0 !important;
+/* 全域佈局設定 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f4f7f9;
+  padding: 12px;
+  box-sizing: border-box;
+  gap: 12px; /* 區塊間的間距 */
 }
 
-html, body {
-  height: 100% !important;
-  overflow: hidden !important;
+/* 頂部導覽列 */
+.top-nav {
+  flex-shrink: 0;
+}
+.path-input-container {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.path-input-container input {
+  flex: 1;
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: #f5f7fa;
+}
+.select-btn {
+  background-color: #409eff;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 主內容區 */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* 防止內容撐開視窗 */
+  gap: 12px;
+}
+
+/* 卡片式容器樣式 */
+.section-card {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.panel-title {
+  margin: 0;
+  padding: 12px;
+  background-color: #ebeef5;
+  font-size: 14px;
+  color: #303133;
+  border-bottom: 1px solid #dcdfe6;
+}
+
+/* 1. 左欄：清單 */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+}
+.list-wrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+.directory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.directory-list li {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f2f6fc;
+  transition: all 0.2s;
+}
+.directory-list li:hover { background-color: #ecf5ff; }
+.directory-list li.active {
+  background-color: #409eff;
+  color: white;
+}
+
+/* 2. 中欄：圖片預覽 (等寬並可滾動) */
+.preview-column {
+  flex: 2; /* 佔據較大比例 */
+}
+.image-scroll-box {
+  flex: 1;
+  overflow-y: auto; /* 超過高度時滾動 */
+  overflow-x: hidden;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+.preview-img {
+  width: 100%; /* 圖片等寬顯示 */
+  height: auto;
+  border: 1px solid #ebeef5;
+}
+
+/* 3. 右欄：OCR 結果 */
+.results-column {
+  flex: 1.5;
+}
+.results-scroll-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+/* 文字細節樣式 */
+.ocr-item-group { margin-bottom: 15px; }
+.field-key {
+  font-weight: bold;
+  color: #409eff;
+  display: block;
+  margin-bottom: 5px;
+}
+.ocr-value-card {
+  background: #f9fafc;
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 4px solid #409eff;
+}
+.ocr-text { margin: 0; font-size: 15px; line-height: 1.4; }
+.ocr-meta { margin: 5px 0 0; font-size: 12px; color: #909399; }
+.conf-tag { color: #67c23a; font-weight: bold; }
+
+.empty-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #909399;
 }
 </style>

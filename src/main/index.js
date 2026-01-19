@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import fs from 'fs'
@@ -34,6 +34,18 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
+  // Handle folder selection dialog
+  ipcMain.handle('select-folder', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory'],
+      title: '選擇 OCR 根目錄'
+    })
+    if (result.canceled) {
+      return null
+    }
+    return result.filePaths[0]
+  })
+
   // Handle IPC for getting directories
   ipcMain.handle('get-directories', async (event, rootPath) => {
     try {
@@ -64,8 +76,8 @@ function createWindow() {
       const imgBase64 = imgBuffer.toString('base64')
 
       return {
-        ...parsedData,
-        previewImg: imgBase64
+        jsonData: parsedData,
+        imgBase64: imgBase64
       }
     } catch (error) {
       console.error('Failed to get OCR data:', error)
