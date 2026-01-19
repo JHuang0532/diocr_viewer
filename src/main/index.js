@@ -1,12 +1,14 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import fs from 'fs'
+import path from 'path'
 
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -31,6 +33,30 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  // Handle IPC for loading directory
+  ipcMain.handle('load-directory', async (event, rootDirectory) => {
+    try {
+      const imageDirectories = []
+      const files = await fs.promises.readdir(rootDirectory, { withFileTypes: true })
+
+      for (const file of files) {
+        if (file.isDirectory()) {
+          const dirPath = path.join(rootDirectory, file.name)
+          const jsonFilePath = path.join(dirPath, 'simple_results.json')
+          if (fs.existsSync(jsonFilePath)) {
+            imageDirectories.push(file.name)
+          }
+        }
+      }
+      mainWindow.webContents.send('image-directories-loaded', imageDirectories)
+      return { success: true }
+    } catch (error) {
+      console.error('Failed to read directory:', error)
+      mainWindow.webContents.send('image-directories-loaded', []) // Send empty array on error
+      return { success: false, error: error.message }
+    }
+  })
 }
 
 // This method will be called when Electron has finished
