@@ -34,7 +34,46 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  // Handle IPC for loading directory
+  // Handle IPC for getting directories
+  ipcMain.handle('get-directories', async (event, rootPath) => {
+    try {
+      const items = await fs.promises.readdir(rootPath, { withFileTypes: true })
+      const directories = items
+        .filter(item => item.isDirectory())
+        .map(item => item.name)
+      return directories
+    } catch (error) {
+      console.error('Failed to read directory:', error)
+      throw error
+    }
+  })
+
+  // Handle IPC for getting OCR data
+  ipcMain.handle('get-ocr-data', async (event, rootPath, dirName) => {
+    try {
+      const dirPath = path.join(rootPath, dirName)
+      const jsonPath = path.join(dirPath, 'simple_results.json')
+      const imgPath = path.join(dirPath, 'bbox_mask_preview.jpg')
+
+      // Read JSON file
+      const jsonData = await fs.promises.readFile(jsonPath, 'utf-8')
+      const parsedData = JSON.parse(jsonData)
+
+      // Read image and convert to base64
+      const imgBuffer = await fs.promises.readFile(imgPath)
+      const imgBase64 = imgBuffer.toString('base64')
+
+      return {
+        ...parsedData,
+        previewImg: imgBase64
+      }
+    } catch (error) {
+      console.error('Failed to get OCR data:', error)
+      throw error
+    }
+  })
+
+  // Handle IPC for loading directory (legacy, kept for compatibility)
   ipcMain.handle('load-directory', async (event, rootDirectory) => {
     try {
       const imageDirectories = []

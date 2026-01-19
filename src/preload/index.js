@@ -3,6 +3,11 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
+  // New simplified API
+  getDirectories: (rootPath) => ipcRenderer.invoke('get-directories', rootPath),
+  getOCRData: (rootPath, dirName) => ipcRenderer.invoke('get-ocr-data', rootPath, dirName),
+
+  // Legacy API (kept for compatibility)
   loadDirectory: (rootDirectory) => ipcRenderer.invoke('load-directory', rootDirectory),
   getDirectoryDetails: (rootDirectory, selectedDir) =>
     ipcRenderer.invoke('get-directory-details', rootDirectory, selectedDir),
