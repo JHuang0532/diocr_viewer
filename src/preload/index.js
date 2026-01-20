@@ -10,6 +10,10 @@ const api = {
   getDirectories: (rootPath) => ipcRenderer.invoke('get-directories', rootPath),
   getOCRData: (rootPath, dirName) => ipcRenderer.invoke('get-ocr-data', rootPath, dirName),
 
+  // Plugin API
+  getPlugins: () => ipcRenderer.invoke('get-plugins'),
+  onPluginsUpdated: (callback) => ipcRenderer.on('plugins-updated', (_event, plugins) => callback(plugins)),
+
   // Legacy API (kept for compatibility)
   loadDirectory: (rootDirectory) => ipcRenderer.invoke('load-directory', rootDirectory),
   getDirectoryDetails: (rootDirectory, selectedDir) =>

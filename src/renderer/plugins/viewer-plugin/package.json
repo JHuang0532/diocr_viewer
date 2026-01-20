@@ -1,0 +1,9 @@
+{
+  "name": "viewer-plugin",
+  "version": "1.0.0",
+  "description": "A plugin for viewing directory contents.",
+  "main": "index.js",
+  "type": "module",
+  "renderer": "ViewerPage.vue",
+  "icon": "📁"
+}

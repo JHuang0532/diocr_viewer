@@ -35,7 +35,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { batchOCRProcess } from '../services/ocrService.js'
+import { batchOCRProcess } from '../../src/services/ocrService.js'
 import OcrResultDisplay from './OcrResultDisplay.vue'
 
 // --- 狀態定義 ---

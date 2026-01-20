@@ -1,0 +1,9 @@
+{
+  "name": "ocr-plugin",
+  "version": "1.0.0",
+  "description": "A plugin for manual OCR uploads.",
+  "main": "index.js",
+  "type": "module",
+  "renderer": "OcrPage.vue",
+  "icon": "➕"
+}

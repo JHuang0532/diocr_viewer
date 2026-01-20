@@ -1,11 +1,178 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join } from 'path'
+import { join, resolve } from 'path'
+import { pathToFileURL } from 'url'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import fs from 'fs'
 import path from 'path'
+import chokidar from 'chokidar'
+
+class PluginManager {
+  constructor(mainWindow) {
+    this.mainWindow = mainWindow
+    this.plugins = new Map()
+    this.pluginsDir = resolve(app.getAppPath(), 'src', 'renderer', 'plugins')
+    this.watcher = null
+  }
+
+  async loadPlugins() {
+    console.log('[PluginManager] Loading plugins from:', this.pluginsDir)
+    if (!fs.existsSync(this.pluginsDir)) {
+      fs.mkdirSync(this.pluginsDir, { recursive: true })
+    }
+
+    const pluginFolders = fs.readdirSync(this.pluginsDir, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name)
+
+    for (const folder of pluginFolders) {
+      const pluginPath = resolve(this.pluginsDir, folder)
+      this.loadPlugin(pluginPath)
+    }
+  }
+
+  loadPlugin(pluginPath) {
+    const packageJsonPath = resolve(pluginPath, 'package.json')
+    if (!fs.existsSync(packageJsonPath)) {
+      console.error(`[PluginManager] No package.json found for plugin at ${pluginPath}`)
+      return
+    }
+
+    try {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
+      const mainFile = resolve(pluginPath, packageJson.main)
+
+      if (!fs.existsSync(mainFile)) {
+        console.error(`[PluginManager] Main file not found for plugin ${packageJson.name} at ${mainFile}`)
+        return
+      }
+
+      // ESM import
+      import(`${pathToFileURL(mainFile).href}?t=${Date.now()}`).then(module => {
+        const pluginInstance = module.activate(this.getApiForPlugin(packageJson.name))
+        this.plugins.set(packageJson.name, {
+          ...packageJson,
+          path: pluginPath,
+          instance: pluginInstance,
+          // renderer is already in packageJson, no need to resolve it here
+        })
+        console.log(`[PluginManager] Plugin "${packageJson.name}" loaded.`)
+        this.broadcastPluginList()
+      }).catch(err => {
+         console.error(`[PluginManager] Error loading plugin ${packageJson.name}:`, err)
+      });
+
+    } catch (error) {
+      console.error(`[PluginManager] Error loading plugin at ${pluginPath}:`, error)
+    }
+  }
+  
+  unloadPlugin(pluginName) {
+    const plugin = this.plugins.get(pluginName)
+    if(plugin && plugin.instance && typeof plugin.instance.deactivate === 'function') {
+      plugin.instance.deactivate()
+    }
+    this.plugins.delete(pluginName)
+    // Clear module cache
+    // This is tricky with ESM. For now, we'll rely on the timestamp query string.
+    console.log(`[PluginManager] Plugin "${pluginName}" unloaded.`)
+    this.broadcastPluginList()
+  }
+
+  watchPlugins() {
+    this.watcher = chokidar.watch(this.pluginsDir, {
+      ignored: /(^|[\/\\])\../, // ignore dotfiles
+      persistent: true,
+      depth: 1 // watch subdirectories
+    });
+
+    this.watcher.on('addDir', (path) => {
+        if (path === this.pluginsDir) return;
+        console.log(`[PluginManager] Detected new plugin directory: ${path}. Loading...`);
+        // A short delay to allow all files to be created
+        setTimeout(() => this.loadPlugin(path), 1000);
+    });
+
+    this.watcher.on('unlinkDir', (path) => {
+        const pluginName = this.findPluginNameByPath(path);
+        if (pluginName) {
+            console.log(`[PluginManager] Detected plugin removal: ${pluginName}. Unloading...`);
+            this.unloadPlugin(pluginName);
+        }
+    });
+
+    // For file changes, we'll just log for now. A more robust solution would be to unload/reload.
+     this.watcher.on('change', (path) => {
+      console.log(`[PluginManager] File changed: ${path}. Reloading plugin...`);
+      const pluginName = this.findPluginNameByPath(path);
+      if (pluginName) {
+        this.unloadPlugin(pluginName);
+        // A short delay to ensure files are written
+        setTimeout(() => this.loadPlugin(this.getPluginPathByName(pluginName)), 1000);
+      }
+    });
+  }
+  
+  findPluginNameByPath(filePath) {
+      for (const [name, plugin] of this.plugins.entries()) {
+          if (filePath.startsWith(plugin.path)) {
+              return name;
+          }
+      }
+      return null;
+  }
+  
+  getPluginPathByName(pluginName) {
+    const plugin = this.plugins.get(pluginName)
+    return plugin ? plugin.path : null;
+  }
+
+  getApiForPlugin(pluginName) {
+    // This is where you would provide a sandboxed API to your plugins
+    console.log(`[PluginManager] Providing API for plugin: ${pluginName}`)
+    return {
+      // Example API
+      app: {
+        getVersion: () => app.getVersion()
+      },
+      ipc: {
+        send: (channel, ...args) => this.mainWindow.webContents.send(channel, ...args),
+        invoke: (channel, ...args) => ipcMain.invoke(channel, ...args)
+      }
+    }
+  }
+
+  broadcastPluginList() {
+    const serializablePlugins = Array.from(this.plugins.values()).map(p => ({
+      name: p.name,
+      version: p.version,
+      description: p.description,
+      renderer: p.renderer,
+      icon: p.icon // Assuming icon is part of package.json
+    }))
+    console.log('[PluginManager] Broadcasting plugin list to renderer.')
+    this.mainWindow.webContents.send('plugins-updated', serializablePlugins)
+  }
+  
+  getPlugins() {
+     const serializablePlugins = Array.from(this.plugins.values()).map(p => ({
+      name: p.name,
+      version: p.version,
+      description: p.description,
+      renderer: p.renderer,
+      icon: p.icon 
+    }))
+    return serializablePlugins;
+  }
+
+  stopWatching() {
+    if (this.watcher) {
+      this.watcher.close()
+    }
+  }
+}
+
 
 function createWindow() {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -13,7 +180,9 @@ function createWindow() {
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: false, // Keep this false
+      contextIsolation: true, // Keep this true
     }
   })
 
@@ -26,143 +195,80 @@ function createWindow() {
     return { action: 'deny' }
   })
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
-  // Handle folder selection dialog
-  ipcMain.handle('select-folder', async () => {
-    const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openDirectory'],
-      title: '選擇 OCR 根目錄'
-    })
-    if (result.canceled) {
-      return null
-    }
-    return result.filePaths[0]
-  })
-
-  // Handle IPC for getting directories
-  ipcMain.handle('get-directories', async (event, rootPath) => {
-    try {
-      const items = await fs.promises.readdir(rootPath, { withFileTypes: true })
-      const directories = items
-        .filter(item => item.isDirectory())
-        .map(item => item.name)
-      return directories
-    } catch (error) {
-      console.error('Failed to read directory:', error)
-      throw error
-    }
-  })
-
-  // Handle IPC for getting OCR data
-  ipcMain.handle('get-ocr-data', async (event, rootPath, dirName) => {
-    try {
-      const dirPath = path.join(rootPath, dirName)
-      const jsonPath = path.join(dirPath, 'simple_results.json')
-      const imgPath = path.join(dirPath, 'bbox_mask_preview.jpg')
-
-      // Read JSON file
-      const jsonData = await fs.promises.readFile(jsonPath, 'utf-8')
-      const parsedData = JSON.parse(jsonData)
-
-      // Read image and convert to base64
-      const imgBuffer = await fs.promises.readFile(imgPath)
-      const imgBase64 = imgBuffer.toString('base64')
-
-      return {
-        jsonData: parsedData,
-        imgBase64: imgBase64
-      }
-    } catch (error) {
-      console.error('Failed to get OCR data:', error)
-      throw error
-    }
-  })
-
-  // Handle IPC for loading directory (legacy, kept for compatibility)
-  ipcMain.handle('load-directory', async (event, rootDirectory) => {
-    try {
-      const imageDirectories = []
-      const files = await fs.promises.readdir(rootDirectory, { withFileTypes: true })
-
-      for (const file of files) {
-        if (file.isDirectory()) {
-          const dirPath = path.join(rootDirectory, file.name)
-          const jsonFilePath = path.join(dirPath, 'simple_results.json')
-          if (fs.existsSync(jsonFilePath)) {
-            imageDirectories.push(file.name)
-          }
-        }
-      }
-      mainWindow.webContents.send('image-directories-loaded', imageDirectories)
-      return { success: true }
-    } catch (error) {
-      console.error('Failed to read directory:', error)
-      mainWindow.webContents.send('image-directories-loaded', []) // Send empty array on error
-      return { success: false, error: error.message }
-    }
-  })
-
-  ipcMain.handle('get-directory-details', async (event, rootDirectory, selectedDir) => {
-    try {
-      const dirPath = path.join(rootDirectory, selectedDir)
-      const jsonFilePath = path.join(dirPath, 'simple_results.json')
-      const imagePath = path.join(dirPath, 'bbox_mask_preview.jpg')
-
-      // Read and parse the JSON file
-      const jsonData = await fs.promises.readFile(jsonFilePath, 'utf-8')
-      const ocrData = JSON.parse(jsonData)
-
-      // Read the image file and convert it to a data URL
-      const imageBuffer = await fs.promises.readFile(imagePath)
-      const imageBase64 = imageBuffer.toString('base64')
-      const imageUrl = `data:image/jpeg;base64,${imageBase64}`
-
-      return { success: true, details: { ocrData: ocrData.ocr_data, imageUrl: imageUrl } }
-    } catch (error) {
-      console.error('Failed to get directory details:', error)
-      return { success: false, error: error.message }
-    }
-  })
+  
+  return mainWindow;
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  createWindow()
+  
+
+  const mainWindow = createWindow()
+
+  
+
+    const pluginManager = new PluginManager(mainWindow);
+
+  
+
+  pluginManager.loadPlugins().then(() => {    pluginManager.watchPlugins();
+  });
+
+
+  // IPC handlers
+  ipcMain.handle('get-plugins', () => {
+    return pluginManager.getPlugins();
+  })
+
+  ipcMain.handle('select-folder', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory'],
+      title: '選擇 OCR 根目錄'
+    })
+    return canceled ? null : filePaths[0]
+  })
+
+  ipcMain.handle('get-directories', async (event, rootPath) => {
+    const items = await fs.promises.readdir(rootPath, { withFileTypes: true })
+    return items.filter(item => item.isDirectory()).map(item => item.name)
+  })
+
+  ipcMain.handle('get-ocr-data', async (event, rootPath, dirName) => {
+    const dirPath = path.join(rootPath, dirName)
+    const jsonPath = path.join(dirPath, 'simple_results.json')
+    const imgPath = path.join(dirPath, 'bbox_mask_preview.jpg')
+
+    const jsonData = await fs.promises.readFile(jsonPath, 'utf-8')
+    const imgBuffer = await fs.promises.readFile(imgPath)
+    
+    return {
+      jsonData: JSON.parse(jsonData),
+      imgBase64: imgBuffer.toString('base64')
+    }
+  })
+
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+  
+  app.on('before-quit', () => {
+    pluginManager.stopWatching();
+  });
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app"s main process
-// code. You can also put them in separate files and require them here.

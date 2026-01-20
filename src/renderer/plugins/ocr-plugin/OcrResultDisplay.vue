@@ -42,5 +42,4 @@ const getConfidenceColor = (confidence) => {
 </script>
 
 <style scoped>
-@import './OcrResultDisplay.css';
 </style>
