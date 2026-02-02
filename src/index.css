@@ -21,10 +21,20 @@ html, body {
 /* 強制隱藏所有根層級的捲軸 */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
-#app::-webkit-scrollbar {
+#app::-webkit-scrollbar,
+.app-layout::-webkit-scrollbar,
+.main-view::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* 確保內部容器也不會意外撑開 body */
+.app-layout,
+.main-view {
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
 }
 
 ::-webkit-scrollbar-track {
