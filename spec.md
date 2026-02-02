@@ -1,179 +1,81 @@
-# 需求1
+## 需求問題
+可以看見我點到的'集任股份有限公司'這個文字明明就在最上面卻被劃在圖片中間,
 
-視覺上好多了,請修正
-1. 最右邊的主視窗scrollbar拿掉,
-2.所有scrollbar樣式都跟vscdoe依樣大概是現在的一半而已而且,沒有需要滾動的時候透明度下降到0.1
+我可以感受到我點擊右側辨識文字時整個畫面有移動並將該位置顯示在中間預覽區塊的左上角,可是黃框確畫在底下
 
-## 建議調整
-要將介面調整得更接近 VS Code 的精簡感，我們需要針對全域與局部滾動條（Scrollbar）進行細部 CSS 調節。
+請分析並修正這個問題
+## 解決方式
+根據您的描述與提供的代碼分析，黃框位移的主要原因在於 「座標系不一致」 與 「模板邏輯錯誤」。問題分析解析度不匹配 (Resolution Mismatch)：您的原始圖片寬度為 $2496px$，但瀏覽器顯示的預覽圖（bbox_mask_preview.jpg）可能經過縮放，或者 SVG 標籤沒有設定 viewBox，導致 SVG 內部的 $1$ 單位不等於圖片的 $1$ 像素。當您在 $2496px$ 的畫布上畫在 $Y=708$ 的位置時，如果 SVG 容器縮放了，框就會飄到錯誤的地方。Offset 引用錯誤：在您的 ViewerPage.vue 模板中，@focus="highlightBox(item, val[0].origin_offset)" 始終使用該欄位組（val）中 第一個項目 的偏移量。對於多行欄位（如 branch_address_4），每一行的偏移量可能不同，這會導致點擊第二行時卻套用了第一行的位移。SVG 坐標參考系缺失：<svg> 標籤缺少 viewBox 屬性，這使得內部的 polygon 點位無法根據圖片的原始解析度進行自動縮放對齊。修正方案1. 修正 ViewerPage.vue (模板與邏輯)我們需要修正 offset 的傳遞方式，並為 SVG 加入 viewBox 以鎖定原始解析度。程式碼片段<template>
+  <section class="preview-column section-card">
+    <h3 class="panel-title">imgpreview</h3>
+    <div class="image-scroll-box" v-if="previewBase64">
+      <div class="canvas-container">
+        <img 
+          ref="previewImg"
+          :src="`data:image/jpeg;base64,${previewBase64}`" 
+          class="preview-img-original" 
+        />
+        <svg 
+          v-if="activeBox && ocrData" 
+          class="overlay-svg"
+          :viewBox="`0 0 ${ocrData.image_size.width} ${ocrData.image_size.height}`"
+          preserveAspectRatio="none"
+        >
+          <polygon 
+            :points="activeBoxPoints" 
+            style="fill:rgba(255, 255, 0, 0.3); stroke:yellow; stroke-width:3" 
+          />
+        </svg>
+      </div>
+    </div>
+    </section>
 
-1. 移除最右側主視窗滾動條
-在 VS Code 中，外層容器通常是不可滾動的（overflow: hidden），只有內部的各個面板（如檔案清單、編輯區）可以獨立滾動。
+  <section class="results-column section-card">
+    <h3 class="panel-title">textList</h3>
+    <div class="results-scroll-box" v-if="ocrData">
+      <div v-for="(val, key) in ocrData.ocr_data" :key="key" class="ocr-item-group">
+        <div class="field-header">
+          <label class="field-key">{{ key }}:</label>
+        </div>
+        <div v-for="(item, idx) in val" :key="idx" class="ocr-edit-container">
+          <textarea 
+            v-model="item.text" 
+            class="ocr-edit-input" 
+            rows="2"
+            @focus="highlightBox(item, item.origin_offset)"
+            @blur="activeBox = null"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
 
-修改 src/index.css（或全域樣式）：
+<script setup>
+// ... 其餘邏輯保持不變，highlightBox 內的 globalBox 計算是正確的 ...
+</script>
+2. 修正 ViewerPage.css (佈局對齊)確保畫布容器緊貼圖片，不產生額外的偏移。CSS/* 修改 ViewerPage.css */
 
-CSS
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden; /* 強制移除最外層滾動條 */
+.canvas-container {
+  position: relative;
+  display: inline-block; /* 讓容器寬度精確等於圖片寬度 */
+  line-height: 0;
+  vertical-align: top;
 }
 
-#app {
-  height: 100%;
-  overflow: hidden;
-}
-2. VS Code 風格精簡滾動條
-為了讓所有面板的滾動條寬度減半（約 6px - 8px），並在靜止或無需求時降低透明度，我們可以使用 Webkit 偽元素進行定義。
-
-修改 src/index.css（建議放在檔案頂部以套用到所有元件）：
-
-CSS
-/* 設定全域滾動條寬度與高度 */
-::-webkit-scrollbar {
-  width: 6px;  /* 寬度減半 */
-  height: 6px;
+.preview-img-original {
+  display: block;
+  width: auto;
+  max-width: none !important; /* 強制不縮放圖片，維持原始像素比例 */
+  height: auto;
 }
 
-/* 滾動條軌道 (背景) */
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* 滾動條滑塊 (Thumb) */
-::-webkit-scrollbar-thumb {
-  background-color: rgba(121, 121, 121, 0.4); /* 預設較淺色 */
-  border-radius: 10px;
-}
-
-/* 當不需要滾動或滑鼠不在上方時，讓它幾乎透明 (0.1) */
-/* 註：標準 CSS 無法完全自動偵測「是否有滾動需求」來改變透明度，
-   但我們可以透過父元件 hover 來觸發，模擬 VS Code 效果 */
-.list-wrapper, .image-scroll-box, .results-scroll-box, .results-panel {
-  scrollbar-color: rgba(121, 121, 121, 0.1) transparent; /* Firefox 支援 */
-}
-
-/* 滑鼠移入面板時，滾動條變明顯 */
-.list-wrapper:hover::-webkit-scrollbar-thumb,
-.image-scroll-box:hover::-webkit-scrollbar-thumb,
-.results-scroll-box:hover::-webkit-scrollbar-thumb,
-.results-panel:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(121, 121, 121, 0.7);
-}
-
-/* 預設狀態下極度透明 */
-::-webkit-scrollbar-thumb {
-  background-color: rgba(121, 121, 121, 0.1); /* 透明度 0.1 */
-}
-3. 同步修正插件面板
-請確保 ViewerPage.vue 和 OcrPage.vue 內的容器確實使用了獨立滾動，否則外層 overflow: hidden 會導致內容被裁切。
-
-檢查 src/renderer/plugins/viewer-plugin/ViewerPage.css：
-
-CSS
-.list-wrapper,
-.image-scroll-box,
-.results-scroll-box {
-  flex: 1;
-  overflow-y: auto; /* 確保內部可滾動 */
-  overflow-x: hidden;
-}
-
-/* 確保面板標題不會跟著滾動 */
-.section-card {
-  height: 100%;
-  overflow: hidden;
-}
-
-# 需求2
-1. 另外應該要固定顯示畫面在開啟的時候就像vscode有一個固定大小(先預設1280X720),然後使用者可以自行調整大小
-2. 右側文字列表寬度減半
-## 建議修改
-了解，這兩個調整會讓介面更有「工具感」。我們將透過修改 Electron 的主進程設定來固定初始視窗大小，並調整 CSS 來縮減右側文字列表的佔比。
-
-1. 固定初始視窗大小 (1280x720)
-我們需要修改 Electron 的主進程檔案，設定視窗啟動時的寬高。
-
-修改 src/main/index.js：
-
-JavaScript
-// 在 createWindow 函數中修改設定
-function createWindow() {
-  const mainWindow = new BrowserWindow({
-    width: 1280,   // 設定初始寬度
-    height: 720,   // 設定初始高度
-    show: false,
-    autoHideMenuBar: true,
-    // 允許使用者調整大小 (預設即為 true，確保沒被禁用)
-    resizable: true, 
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      nodeIntegration: false,
-      contextIsolation: true,
-    }
-  })
-  // ... 其餘代碼不變
-}
-2. 右側文字列表寬度減半
-目前的 results-column 設定為 flex: 1.5，我們要將其縮小。為了精確控制，我們可以將其改為固定寬度或更小的比例，並確保中間預覽圖區域能自動伸展。
-
-修改 src/renderer/plugins/viewer-plugin/ViewerPage.css：
-
-CSS
-/* 調整比例，讓右側面板變窄 */
-.preview-column {
-  flex: 3; /* 增加中間預覽的比例 */
-  border-right: 1px solid #dcdfe6;
-}
-
-.results-column {
-  flex: 0.7; /* 將比例從 1.5 降至 0.7，大約是原本的一半 */
-  min-width: 200px; /* 設定最小寬度避免縮太小文字難讀 */
-  background-color: #ffffff;
-}
-
-/* 同步修正內容物的字體大小，避免變窄後顯得擁擠 */
-.field-key {
-  font-size: 11px; /* 稍微縮小標籤 */
-}
-
-.ocr-text {
-  font-size: 13px; /* 稍微縮小內容文字 */
-}
-3. 全域滾動條優化 (含透明度邏輯)
-根據您的要求，我們將滾動條寬度縮減並加上透明度控制。
-
-修改 src/index.css：
-
-CSS
-/* 移除主視窗滾動條 */
-html, body {
-  overflow: hidden !important;
-}
-
-/* 自定義精簡滾動條 */
-::-webkit-scrollbar {
-  width: 5px; /* 寬度減半 */
-  height: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  /* 預設極低透明度 0.1 */
-  background-color: rgba(121, 121, 121, 0.1); 
-  border-radius: 10px;
-  transition: background-color 0.2s;
-}
-
-/* 當滑鼠懸停在可滾動區域時，提高透明度 */
-.list-wrapper:hover::-webkit-scrollbar-thumb,
-.image-scroll-box:hover::-webkit-scrollbar-thumb,
-.results-scroll-box:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(121, 121, 121, 0.4); /* 懸停時加深 */
-}
-
-/* 點擊抓取時更深 */
-::-webkit-scrollbar-thumb:active {
-  background-color: rgba(121, 121, 121, 0.7);
+.overlay-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* 會自動拉伸至 .canvas-container (即圖片) 的寬度 */
+  height: 100%; /* 會自動拉伸至圖片高度 */
+  pointer-events: none;
+  z-index: 10;
 }

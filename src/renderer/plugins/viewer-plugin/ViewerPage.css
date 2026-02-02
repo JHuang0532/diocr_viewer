@@ -38,18 +38,54 @@
   font-weight: 500;
 }
 
-.image-scroll-box,
+/* 中間圖片原始寬度呈現 */
+.image-container {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  vertical-align: top;
+}
+
+.preview-img-original {
+  display: block;
+  width: auto;
+  max-width: none !important;
+  height: auto;
+}
+
+.overlay-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.overlay-svg polygon {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { fill: rgba(255, 255, 0, 0.2); }
+  50% { fill: rgba(255, 255, 0, 0.5); }
+  100% { fill: rgba(255, 255, 0, 0.2); }
+}
+
+.image-scroll-box {
+  flex: 1;
+  overflow: auto !important;
+  background-color: #525659;
+  padding: 20px;
+  display: block;
+  text-align: center;
+}
+
 .results-scroll-box {
   flex: 1;
   overflow-y: auto;
   padding: 15px;
-}
-
-.preview-img {
-  width: 100%;
-  height: auto;
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
 }
 
 .empty-placeholder {
@@ -143,10 +179,50 @@
   border-right: 1px solid #dcdfe6;
 }
 
+/* 右側文字區塊寬度提升 */
 .results-column {
-  flex: 1.5;
-  min-width: 300px;
+  flex: 1.1;
+  min-width: 320px;
   background-color: #ffffff;
+}
+
+/* 編輯區塊樣式 */
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 4px 0;
+}
+
+.conf-tag-inline {
+  font-size: 11px;
+  color: #67c23a;
+  font-weight: bold;
+}
+
+.ocr-edit-container {
+  margin-bottom: 8px;
+}
+
+.ocr-edit-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  background: #ffffff;
+  color: #333;
+  line-height: 1.4;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ocr-edit-input:focus {
+  border-color: #409eff;
+  background: #fdfdfd;
 }
 
 .ocr-item-group {

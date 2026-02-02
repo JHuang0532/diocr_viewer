@@ -176,6 +176,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    useContentSize: true,
     minWidth: 1000,
     minHeight: 600,
     center: true,
