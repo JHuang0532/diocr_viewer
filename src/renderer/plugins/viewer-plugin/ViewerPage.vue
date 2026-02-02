@@ -140,21 +140,30 @@ const highlightBox = (item) => {
 }
 
 const clearHighlight = () => {
-  // 為了方便查看，您可以選擇註解掉下一行，讓框停留在畫面上
-  // activeBoxes.value = []
+  activeBoxes.value = []
 }
 
 const scrollToBox = (box) => {
   if (!box) return
   
   const container = document.querySelector('.image-scroll-box')
-  if (container) {
-    // 預留 100px 邊距
-    const targetLeft = Math.max(0, box.x - 100)
-    const targetTop = Math.max(0, box.y - 100)
+  const imgElement = document.querySelector('.preview-img-original')
+  
+  if (container && imgElement && ocrData.value) {
+    // 計算縮放比例：當前顯示寬度 / 原始圖片寬度
+    const originalWidth = ocrData.value.image_size.width
+    const currentWidth = imgElement.clientWidth
+    const scale = (originalWidth > 0 && currentWidth > 0) ? (currentWidth / originalWidth) : 1
+    
+    console.log(`Scroll - Original: ${originalWidth}, Current: ${currentWidth}, Scale: ${scale.toFixed(3)}`)
+    console.log(`Target Y (Original): ${box.y}, Scaled: ${(box.y * scale).toFixed(1)}`)
+    
+    // 將原始座標轉換為當前渲染座標，並預留緩衝空間
+    const buffer = 100
+    const targetTop = Math.max(0, (box.y * scale) - buffer)
     
     container.scrollTo({
-      left: targetLeft,
+      left: 0,
       top: targetTop,
       behavior: 'smooth'
     })

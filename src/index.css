@@ -19,8 +19,19 @@ html, body {
 
 /* 自定義精簡滾動條 */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 2.5px;
+  height: 2.5px;
+}
+
+/* 隱藏主視窗scrollbar */
+html, body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#app::-webkit-scrollbar {
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
