@@ -1,76 +1,179 @@
-<!-- ##問題
+# 需求1
 
-1. icon1(上傳並且辨識的畫面),選擇圖片並辨識,選好圖片之後要馬上更新圖片,並清空右側資料
-2. 右邊的NAVIGATRIONBAR要在窄一點,要有VSCODE的高級感
-3. 請將APP.VUE模組化,拆分成ocr_page.vue, ocr_reuslt_display.vue 兩個頁面,並且將css也單獨出來,未來容易擴充1ㄅ -->
-不需要「整個重寫」，但確實需要對目前的架構進行**「解耦」與「抽象化」**。
+視覺上好多了,請修正
+1. 最右邊的主視窗scrollbar拿掉,
+2.所有scrollbar樣式都跟vscdoe依樣大概是現在的一半而已而且,沒有需要滾動的時候透明度下降到0.1
 
-目前的 diocr_viewer 架構是**硬編碼（Hard-coded）**的：App.vue 裡面直接寫死了 upload 和 viewer 兩個頁面。如果你想做到像 VS Code 那樣隨插即用、Hot Reload 的插件系統，你的 App.vue 就不應該知道「有哪些頁面」，它只需要負責「提供一個空的框架」並「渲染插件提供的內容」。
+## 建議調整
+要將介面調整得更接近 VS Code 的精簡感，我們需要針對全域與局部滾動條（Scrollbar）進行細部 CSS 調節。
 
-以下是將你目前的專案轉型為「插件化架構」的三個核心改動方向：
+1. 移除最右側主視窗滾動條
+在 VS Code 中，外層容器通常是不可滾動的（overflow: hidden），只有內部的各個面板（如檔案清單、編輯區）可以獨立滾動。
 
-1. 主程序（Main Process）的轉變：從「執行者」變成「管理員」
-目前你的 src/main/index.js 處理了所有的 IPC 邏輯（如 select-folder）。在插件化架構中，你需要加入一個 Extension Manager。
+修改 src/index.css（或全域樣式）：
 
-改動重點：
+CSS
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* 強制移除最外層滾動條 */
+}
 
-動態監聽： 使用 chokidar 監聽專屬的 plugins/ 資料夾。
+#app {
+  height: 100%;
+  overflow: hidden;
+}
+2. VS Code 風格精簡滾動條
+為了讓所有面板的滾動條寬度減半（約 6px - 8px），並在靜止或無需求時降低透明度，我們可以使用 Webkit 偽元素進行定義。
 
-生命週期管理： 當偵測到插件代碼變動時，執行 unload (清理快取) 並重新 load。
+修改 src/index.css（建議放在檔案頂部以套用到所有元件）：
 
-廣播變動： 當插件更新後，透過 IPC 通知 Renderer Process（Vue 畫面）說：「插件清單更新了，請重新載入元件」。
+CSS
+/* 設定全域滾動條寬度與高度 */
+::-webkit-scrollbar {
+  width: 6px;  /* 寬度減半 */
+  height: 6px;
+}
 
-2. 渲染程序（Renderer Process）的轉變：動態組件載入
-你現在的 App.vue 透過 v-if 來切換視圖。要插件化，你必須改用 Vue 的動態組件 (<component :is="...">) 或 非同步組件 (defineAsyncComponent)。
+/* 滾動條軌道 (背景) */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-概念範例：
+/* 滾動條滑塊 (Thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.4); /* 預設較淺色 */
+  border-radius: 10px;
+}
 
-程式碼片段
+/* 當不需要滾動或滑鼠不在上方時，讓它幾乎透明 (0.1) */
+/* 註：標準 CSS 無法完全自動偵測「是否有滾動需求」來改變透明度，
+   但我們可以透過父元件 hover 來觸發，模擬 VS Code 效果 */
+.list-wrapper, .image-scroll-box, .results-scroll-box, .results-panel {
+  scrollbar-color: rgba(121, 121, 121, 0.1) transparent; /* Firefox 支援 */
+}
 
-<template>
-  <div class="app-layout">
-    <nav class="side-nav">
-      <div 
-        v-for="plugin in installedPlugins" 
-        :key="plugin.id"
-        class="nav-item"
-        @click="activePlugin = plugin"
-      >
-        <span>{{ plugin.icon }}</span>
-      </div>
-    </nav>
+/* 滑鼠移入面板時，滾動條變明顯 */
+.list-wrapper:hover::-webkit-scrollbar-thumb,
+.image-scroll-box:hover::-webkit-scrollbar-thumb,
+.results-scroll-box:hover::-webkit-scrollbar-thumb,
+.results-panel:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.7);
+}
 
-    <main class="main-view">
-      <component :is="activePluginComponent" v-if="activePlugin" />
-    </main>
-  </div>
-</template>
-Hot Reload 在這裡的實作： 當 Vite 偵測到插件源碼變動，它會自動處理 HMR。如果插件是外部載入的 .js，你需要一個機制動態重新 import 該檔案。
+/* 預設狀態下極度透明 */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.1); /* 透明度 0.1 */
+}
+3. 同步修正插件面板
+請確保 ViewerPage.vue 和 OcrPage.vue 內的容器確實使用了獨立滾動，否則外層 overflow: hidden 會導致內容被裁切。
 
-3. API 注入：建立「標準插件協定」
-你目前的 ocrService.js 是直接在元件內 import 並使用的。為了讓第三方插件也能使用 OCR 功能，你需要把這些功能包裝成一個「SDK」或「API 物件」傳給插件。
+檢查 src/renderer/plugins/viewer-plugin/ViewerPage.css：
 
-你可以這樣封裝你的 ocrService 給插件用：
+CSS
+.list-wrapper,
+.image-scroll-box,
+.results-scroll-box {
+  flex: 1;
+  overflow-y: auto; /* 確保內部可滾動 */
+  overflow-x: hidden;
+}
+
+/* 確保面板標題不會跟著滾動 */
+.section-card {
+  height: 100%;
+  overflow: hidden;
+}
+
+# 需求2
+1. 另外應該要固定顯示畫面在開啟的時候就像vscode有一個固定大小(先預設1280X720),然後使用者可以自行調整大小
+2. 右側文字列表寬度減半
+## 建議修改
+了解，這兩個調整會讓介面更有「工具感」。我們將透過修改 Electron 的主進程設定來固定初始視窗大小，並調整 CSS 來縮減右側文字列表的佔比。
+
+1. 固定初始視窗大小 (1280x720)
+我們需要修改 Electron 的主進程檔案，設定視窗啟動時的寬高。
+
+修改 src/main/index.js：
 
 JavaScript
+// 在 createWindow 函數中修改設定
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    width: 1280,   // 設定初始寬度
+    height: 720,   // 設定初始高度
+    show: false,
+    autoHideMenuBar: true,
+    // 允許使用者調整大小 (預設即為 true，確保沒被禁用)
+    resizable: true, 
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+    }
+  })
+  // ... 其餘代碼不變
+}
+2. 右側文字列表寬度減半
+目前的 results-column 設定為 flex: 1.5，我們要將其縮小。為了精確控制，我們可以將其改為固定寬度或更小的比例，並確保中間預覽圖區域能自動伸展。
 
-// 你的內部 API
-const internalAPI = {
-  ocr: {
-    batchProcess: batchOCRProcess, // 來自你寫好的 ocrService.js
-    parseKey: parseFilenameToKey
-  },
-  ui: {
-    selectFolder: window.api.selectFolder // 來自 preload
-  }
-};
-總結：你現在該做什麼？
-你不需要推翻重寫，建議採取以下漸進式步驟：
+修改 src/renderer/plugins/viewer-plugin/ViewerPage.css：
 
-將 OcrPage.vue 和 ViewerPage.vue 視為「內建插件」：練習不要在 App.vue 直接 import 它們，而是試著用一個清單物件來描述它們（名稱、圖示、元件名稱），並用 v-for 產生側邊欄。
+CSS
+/* 調整比例，讓右側面板變窄 */
+.preview-column {
+  flex: 3; /* 增加中間預覽的比例 */
+  border-right: 1px solid #dcdfe6;
+}
 
-實作主程序監聽器：在 src/main/index.js 加入 chokidar，嘗試監聽一個測試資料夾，只要裡面檔案變動，就在控制台印出 "Plugin updated!"。
+.results-column {
+  flex: 0.7; /* 將比例從 1.5 降至 0.7，大約是原本的一半 */
+  min-width: 200px; /* 設定最小寬度避免縮太小文字難讀 */
+  background-color: #ffffff;
+}
 
-定義插件介面：規定所有插件必須有一個 index.js 並 export activate() 函數，這就是邁向 VS Code 架構的第一步。
+/* 同步修正內容物的字體大小，避免變窄後顯得擁擠 */
+.field-key {
+  font-size: 11px; /* 稍微縮小標籤 */
+}
 
-Electron 的魔力在於，你可以從「把一個 .js 檔案動態載入進來並執行」這麼簡單的事情開始，慢慢演變成一個複雜的 Extension Host。 你目前的代碼已經有很好的基礎（IPC、Service 分離），只需加上「動態載入」的邏輯即可。
+.ocr-text {
+  font-size: 13px; /* 稍微縮小內容文字 */
+}
+3. 全域滾動條優化 (含透明度邏輯)
+根據您的要求，我們將滾動條寬度縮減並加上透明度控制。
+
+修改 src/index.css：
+
+CSS
+/* 移除主視窗滾動條 */
+html, body {
+  overflow: hidden !important;
+}
+
+/* 自定義精簡滾動條 */
+::-webkit-scrollbar {
+  width: 5px; /* 寬度減半 */
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  /* 預設極低透明度 0.1 */
+  background-color: rgba(121, 121, 121, 0.1); 
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+/* 當滑鼠懸停在可滾動區域時，提高透明度 */
+.list-wrapper:hover::-webkit-scrollbar-thumb,
+.image-scroll-box:hover::-webkit-scrollbar-thumb,
+.results-scroll-box:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.4); /* 懸停時加深 */
+}
+
+/* 點擊抓取時更深 */
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(121, 121, 121, 0.7);
+}

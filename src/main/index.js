@@ -174,10 +174,14 @@ class PluginManager {
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1280,
+    height: 720,
+    minWidth: 1000,
+    minHeight: 600,
+    center: true,
     show: false,
     autoHideMenuBar: true,
+    resizable: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

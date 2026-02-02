@@ -78,44 +78,54 @@ onMounted(async () => {
 .app-layout {
   display: flex;
   height: 100vh;
-  background-color: #f4f7f9;
+  background-color: #2c3e50;
+  overflow: hidden;
 }
 
 .side-nav {
-  width: 60px;
-  background-color: #2c3e50;
+  width: 30px;
+  background-color: #333333;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
-  gap: 15px;
+  padding-top: 10px;
+  gap: 8px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .nav-item {
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.3s;
+  transition: border-left 0.2s;
   font-size: 20px;
-  color: white;
+  color: #858585;
+  border-left: 2px solid transparent;
+  border-radius: 0;
 }
 
 .nav-item:hover {
-  background-color: #34495e;
+  background-color: transparent;
+  color: #ffffff;
 }
 
 .nav-item.active {
-  background-color: #409eff;
+  background-color: transparent;
+  color: #ffffff;
+  border-left: 2px solid #ffffff;
 }
 
 /* 主內容區 */
 .main-view {
   flex: 1;
   display: flex;
+  background-color: #ffffff;
+  margin: 0;
+  overflow: hidden;
   flex-direction: column;
   overflow: hidden;
 }

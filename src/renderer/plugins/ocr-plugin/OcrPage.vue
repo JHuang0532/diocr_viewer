@@ -15,6 +15,7 @@
         />
       </label>
       <span v-if="isProcessing" class="processing-tag">處理中...</span>
+      <span v-if="elapsedTime > 0" class="elapsed-time">⏱️ {{ formatTime(elapsedTime) }}</span>
     </div>
 
     <div class="upload-body">
@@ -34,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { batchOCRProcess } from '../../src/services/ocrService.js'
 import OcrResultDisplay from './OcrResultDisplay.vue'
 
@@ -42,6 +43,37 @@ import OcrResultDisplay from './OcrResultDisplay.vue'
 const ocrResults = ref({}) // 右側辨識結果
 const previewImage = ref(null) // 中間圖片顯示
 const isProcessing = ref(false)
+const startTime = ref(null) // OCR 開始時間
+const elapsedTime = ref(0) // 已經過時間（毫秒）
+let timerInterval = null // 計時器 ID
+
+// --- 時間格式化函數 ---
+const formatTime = (ms) => {
+  if (ms < 1000) {
+    return `${Math.round(ms)}ms`
+  }
+  const seconds = (ms / 1000).toFixed(2)
+  return `${seconds}s`
+}
+
+// --- 開始計時 ---
+const startTimer = () => {
+  startTime.value = Date.now()
+  elapsedTime.value = 0
+  
+  // 每100ms更新一次顯示
+  timerInterval = setInterval(() => {
+    elapsedTime.value = Date.now() - startTime.value
+  }, 100)
+}
+
+// --- 停止計時 ---
+const stopTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
+}
 
 // --- Upload 視圖功能 ---
 const handleFileUpload = async (event) => {
@@ -52,9 +84,12 @@ const handleFileUpload = async (event) => {
   ocrResults.value = {}
   previewImage.value = URL.createObjectURL(files[0])
   isProcessing.value = true
+  
+  // 2. 開始計時
+  startTimer()
 
   try {
-    // 2. 執行 OCR
+    // 3. 執行 OCR
     const result = await batchOCRProcess(files)
     ocrResults.value = result.results
     
@@ -68,8 +103,17 @@ const handleFileUpload = async (event) => {
     alert(`錯誤: ${error.message}`)
   } finally {
     isProcessing.value = false
+    // 4. 停止計時
+    stopTimer()
   }
 }
+
+// --- 元件卸載時清理計時器 ---
+onUnmounted(() => {
+  if (timerInterval) {
+    clearInterval(timerInterval)
+  }
+})
 </script>
 
 <style scoped>

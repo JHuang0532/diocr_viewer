@@ -4,32 +4,35 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 12px;
-  gap: 12px;
+  padding: 0;
+  gap: 0;
 }
 
 .viewer-content {
   display: flex;
   flex: 1;
-  gap: 12px;
+  gap: 0;
   overflow: hidden;
+  border-top: 1px solid #dcdfe6;
 }
 
 /* 通用卡片樣式 */
 .section-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: none;
   overflow: hidden;
 }
 
 .panel-title {
-  padding: 12px;
-  background-color: #ebeef5;
-  font-size: 14px;
-  color: #303133;
+  padding: 8px 12px;
+  background-color: #f3f3f3;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #616161;
   border-bottom: 1px solid #dcdfe6;
   margin: 0;
   font-weight: 500;
@@ -97,8 +100,10 @@
 
 /* 欄位寬度 */
 .sidebar {
-  width: 220px;
+  width: 200px;
   flex-shrink: 0;
+  border-right: 1px solid #dcdfe6;
+  box-shadow: none;
 }
 
 .list-wrapper {
@@ -113,10 +118,14 @@
 }
 
 .directory-list li {
-  padding: 12px 15px;
+  padding: 6px 12px;
   cursor: pointer;
   border-bottom: 1px solid #f2f6fc;
   transition: all 0.2s;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .directory-list li:hover {
@@ -124,16 +133,20 @@
 }
 
 .directory-list li.active {
-  background-color: #409eff;
+  background-color: #007acc;
   color: white;
 }
 
 .preview-column {
-  flex: 2;
+  flex: 3;
+  border-left: 1px solid #dcdfe6;
+  border-right: 1px solid #dcdfe6;
 }
 
 .results-column {
   flex: 1.5;
+  min-width: 300px;
+  background-color: #ffffff;
 }
 
 .ocr-item-group {
@@ -145,7 +158,7 @@
   color: #409eff;
   display: block;
   margin-bottom: 5px;
-  font-size: 14px;
+  font-size: 11px;
 }
 
 .ocr-value-card {
@@ -158,7 +171,7 @@
 
 .ocr-text {
   margin: 0;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.4;
   word-break: break-word;
 }

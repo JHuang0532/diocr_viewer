@@ -1,16 +1,62 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh !important;
+  width: 100vw !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
   color: #333;
+  overflow: hidden !important;
 }
 
 #app {
-  height: 100%;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+}
+
+/* 自定義精簡滾動條 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.1);
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+/* 當滑鼠懸停在可滾動區域時，提高透明度 */
+.list-wrapper:hover::-webkit-scrollbar-thumb,
+.image-scroll-box:hover::-webkit-scrollbar-thumb,
+.results-scroll-box:hover::-webkit-scrollbar-thumb,
+.results-panel:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(121, 121, 121, 0.4);
+}
+
+/* 點擊抓取時更深 */
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(121, 121, 121, 0.7);
+}
+
+/* 針對 ViewerPage 內容區的 scrollbar 進行 VS Code 化處理 */
+.list-wrapper,
+.image-scroll-box,
+.results-scroll-box {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
+
+/* 隱藏外層多餘的滾動條 */
+.app-layout, .main-view {
+  overflow: hidden !important;
 }
 
 #app-container {
