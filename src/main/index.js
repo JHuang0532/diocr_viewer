@@ -251,14 +251,25 @@ app.whenReady().then(() => {
   ipcMain.handle('get-ocr-data', async (event, rootPath, dirName) => {
     const dirPath = path.join(rootPath, dirName)
     const jsonPath = path.join(dirPath, 'simple_results.json')
-    const imgPath = path.join(dirPath, 'bbox_mask_preview.jpg')
 
-    const jsonData = await fs.promises.readFile(jsonPath, 'utf-8')
-    const imgBuffer = await fs.promises.readFile(imgPath)
+    // 1. 先讀取並解析 JSON 檔案以獲取原始圖片路徑
+    const jsonDataRaw = await fs.promises.readFile(jsonPath, 'utf-8')
+    const jsonData = JSON.parse(jsonDataRaw)
     
-    return {
-      jsonData: JSON.parse(jsonData),
-      imgBase64: imgBuffer.toString('base64')
+    // 2. 從 JSON 資料中取得 "image_path"
+    const imgPath = jsonData.image_path
+
+    try {
+      // 3. 讀取原始圖片檔案
+      const imgBuffer = await fs.promises.readFile(imgPath)
+      
+      return {
+        jsonData: jsonData,
+        imgBase64: imgBuffer.toString('base64')
+      }
+    } catch (error) {
+      console.error(`無法讀取原始圖片: ${imgPath}`, error)
+      throw error
     }
   })
 

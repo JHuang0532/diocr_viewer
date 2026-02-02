@@ -41,7 +41,7 @@
                 :y="box.y"
                 :width="box.width"
                 :height="box.height"
-                style="fill:rgba(255, 255, 0, 0.2); stroke:red; stroke-width:5" 
+                style="fill:rgba(255, 255, 0, 0.4); pointer-events: none;" 
               />
             </svg>
           </div>
@@ -54,14 +54,14 @@
         <div class="results-scroll-box" v-if="ocrData">
           <div v-for="(val, key) in ocrData.ocr_data" :key="key" class="ocr-item-group">
             <div class="field-header">
-              <label class="field-key">{{ key }}:</label>
+              <label class="field-key">{{ key }}</label>
               <span v-if="val[0]" class="conf-tag-inline">{{ (val[0].ocr_confidence * 100).toFixed(1) }}%</span>
             </div>
             <div v-for="(item, idx) in val" :key="idx" class="ocr-edit-container">
               <textarea 
                 v-model="item.text" 
                 class="ocr-edit-input" 
-                rows="2"
+                rows="1"
                 @focus="highlightBox(item)"
                 @blur="clearHighlight"
               ></textarea>
