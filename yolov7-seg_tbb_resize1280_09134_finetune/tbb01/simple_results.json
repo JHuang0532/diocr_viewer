@@ -1,0 +1,809 @@
+{
+  "timestamp": "2026-02-02T17:14:14.168592",
+  "image_path": "Z:\\DataSet\\banking\\tbb_pdf\\tbb01.jpg",
+  "image_size": {
+    "width": 2480,
+    "height": 3447,
+    "depth": 3
+  },
+  "ocr_service": "batch_ocr_api",
+  "ocr_image_type": "bbox",
+  "ocr_data": {
+    "amount_1": [
+      {
+        "filename": "tbb01_amount_1_conf0.97.jpg",
+        "text": "USD 5000",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.85153,
+        "lines": [
+          {
+            "text": "USD 5000",
+            "score": 0.85153,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 205.0,
+                "y": 67.75,
+                "text": "USD 5000",
+                "score": 0.85153,
+                "box": [
+                  [
+                    63.0,
+                    32.0
+                  ],
+                  [
+                    346.0,
+                    30.0
+                  ],
+                  [
+                    347.0,
+                    103.0
+                  ],
+                  [
+                    64.0,
+                    106.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 82.0,
+          "y": 2303.0,
+          "width": 469.0,
+          "height": 121.0
+        }
+      }
+    ],
+    "benrficiary_10": [
+      {
+        "filename": "tbb01_benrficiary_10_conf0.94.jpg",
+        "text": "Apex Clearing Corporatin",
+        "yolo_confidence": 0.94,
+        "ocr_confidence": 0.91986,
+        "lines": [
+          {
+            "text": "Apex Clearing Corporatin",
+            "score": 0.91986,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 632.4520833333333,
+                "y": 66.21484375,
+                "text": "Apex Clearing Corporatin",
+                "score": 0.91986,
+                "box": [
+                  [
+                    242.38645833333334,
+                    0.0
+                  ],
+                  [
+                    1020.9125,
+                    0.0
+                  ],
+                  [
+                    1022.5177083333333,
+                    126.81145833333333
+                  ],
+                  [
+                    243.99166666666667,
+                    138.04791666666668
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 176.0,
+          "y": 1642.0,
+          "width": 1541.0,
+          "height": 142.0
+        }
+      }
+    ],
+    "branch_address_6": [
+      {
+        "filename": "tbb01_branch_address_6_conf0.96_line1.jpg",
+        "text": "Bankof America', Taipei Branch",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.90948,
+        "lines": [
+          {
+            "text": "Bankof America', Taipei Branch",
+            "score": 0.90948,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 556.9921875,
+                "y": 57.01171874999999,
+                "text": "Bankof America', Taipei Branch",
+                "score": 0.90948,
+                "box": [
+                  [
+                    59.06249999999999,
+                    16.40625
+                  ],
+                  [
+                    1050.0,
+                    0.0
+                  ],
+                  [
+                    1054.921875,
+                    100.07812499999999
+                  ],
+                  [
+                    63.98437499999999,
+                    111.56249999999999
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 158.0,
+          "y": 1323.0,
+          "width": 1575.0,
+          "height": 211.0
+        }
+      },
+      {
+        "filename": "tbb01_branch_address_6_conf0.96_line2.jpg",
+        "text": "123 Finance St. New York USA",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.950295,
+        "lines": [
+          {
+            "text": "123 Finance St. New York",
+            "score": 0.91198,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 380.62499999999994,
+                "y": 45.11718749999999,
+                "text": "123 Finance St. New York",
+                "score": 0.91198,
+                "box": [
+                  [
+                    70.546875,
+                    6.562499999999999
+                  ],
+                  [
+                    690.7031249999999,
+                    6.562499999999999
+                  ],
+                  [
+                    690.7031249999999,
+                    83.67187499999999
+                  ],
+                  [
+                    70.546875,
+                    83.67187499999999
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "text": "USA",
+            "score": 0.98861,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 1,
+                "x": 1287.890625,
+                "y": 49.21874999999999,
+                "text": "USA",
+                "score": 0.98861,
+                "box": [
+                  [
+                    1210.78125,
+                    6.562499999999999
+                  ],
+                  [
+                    1364.9999999999998,
+                    6.562499999999999
+                  ],
+                  [
+                    1364.9999999999998,
+                    91.87499999999999
+                  ],
+                  [
+                    1210.78125,
+                    91.87499999999999
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 158.0,
+          "y": 1323.0,
+          "width": 1575.0,
+          "height": 211.0
+        }
+      }
+    ],
+    "cust_account_4": [
+      {
+        "filename": "tbb01_cust_account_4_conf0.96.jpg",
+        "text": "330-21-241182",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.96547,
+        "lines": [
+          {
+            "text": "330-21-241182",
+            "score": 0.96547,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 312.5,
+                "y": 103.5,
+                "text": "330-21-241182",
+                "score": 0.96547,
+                "box": [
+                  [
+                    78.0,
+                    69.0
+                  ],
+                  [
+                    547.0,
+                    69.0
+                  ],
+                  [
+                    547.0,
+                    138.0
+                  ],
+                  [
+                    78.0,
+                    138.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 1163.0,
+          "y": 862.0,
+          "width": 692.0,
+          "height": 61.0
+        }
+      }
+    ],
+    "cust_address_8": [
+      {
+        "filename": "tbb01_cust_address_8_conf0.96_line1.jpg",
+        "text": "2F. No.30 Aly. 2, Ln.l00,Songshan Rd.,",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.81599,
+        "lines": [
+          {
+            "text": "2F. No.30 Aly. 2, Ln.l00,Songshan Rd.,",
+            "score": 0.81599,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 617.9645833333333,
+                "y": 44.89140625,
+                "text": "2F. No.30 Aly. 2, Ln.l00,Songshan Rd.,",
+                "score": 0.81599,
+                "box": [
+                  [
+                    103.53333333333333,
+                    4.8531249999999995
+                  ],
+                  [
+                    1132.3958333333333,
+                    0.0
+                  ],
+                  [
+                    1132.3958333333333,
+                    85.73854166666666
+                  ],
+                  [
+                    103.53333333333333,
+                    88.97395833333333
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 372.0,
+          "y": 712.0,
+          "width": 1553.0,
+          "height": 143.0
+        }
+      },
+      {
+        "filename": "tbb01_cust_address_8_conf0.96_line2.jpg",
+        "text": "Taipei City ll004), Taiwan(R.0.C)",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.81824,
+        "lines": [
+          {
+            "text": "Taipei City ll004), Taiwan(R.0.C)",
+            "score": 0.81824,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 860.6208333333333,
+                "y": 31.545312499999998,
+                "text": "Taipei City ll004), Taiwan(R.0.C)",
+                "score": 0.81824,
+                "box": [
+                  [
+                    418.9864583333333,
+                    0.0
+                  ],
+                  [
+                    1302.2552083333333,
+                    0.0
+                  ],
+                  [
+                    1302.2552083333333,
+                    63.090624999999996
+                  ],
+                  [
+                    418.9864583333333,
+                    63.090624999999996
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 372.0,
+          "y": 712.0,
+          "width": 1553.0,
+          "height": 143.0
+        }
+      }
+    ],
+    "detail_of_payment_0": [
+      {
+        "filename": "tbb01_detail_of_payment_0_conf0.98.jpg",
+        "text": "Lin Chin-Ming 97992233",
+        "yolo_confidence": 0.98,
+        "ocr_confidence": 0.963795,
+        "lines": [
+          {
+            "text": "Lin Chin-Ming",
+            "score": 0.93287,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 1072.378125,
+                "y": 89.578125,
+                "text": "Lin Chin-Ming",
+                "score": 0.93287,
+                "box": [
+                  [
+                    866.775,
+                    18.76875
+                  ],
+                  [
+                    1283.1,
+                    35.83125
+                  ],
+                  [
+                    1277.98125,
+                    160.3875
+                  ],
+                  [
+                    861.65625,
+                    143.325
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "text": "97992233",
+            "score": 0.99472,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 1,
+                "x": 671.409375,
+                "y": 90.43125,
+                "text": "97992233",
+                "score": 0.99472,
+                "box": [
+                  [
+                    518.6999999999999,
+                    44.3625
+                  ],
+                  [
+                    824.11875,
+                    44.3625
+                  ],
+                  [
+                    824.11875,
+                    136.5
+                  ],
+                  [
+                    518.6999999999999,
+                    136.5
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 81.0,
+          "y": 2061.0,
+          "width": 1638.0,
+          "height": 164.0
+        }
+      }
+    ],
+    "name_ch_2": [
+      {
+        "filename": "tbb01_name_ch_2_conf0.97.jpg",
+        "text": "林志明",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.96385,
+        "lines": [
+          {
+            "text": "：林志明",
+            "score": 0.96385,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 264.9208333333333,
+                "y": 142.40625,
+                "text": "：林志明",
+                "score": 0.96385,
+                "box": [
+                  [
+                    68.71666666666665,
+                    92.225
+                  ],
+                  [
+                    455.7,
+                    81.375
+                  ],
+                  [
+                    461.12499999999994,
+                    191.6833333333333
+                  ],
+                  [
+                    74.14166666666667,
+                    204.34166666666664
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 295.0,
+          "y": 423.0,
+          "width": 1608.0,
+          "height": 131.0
+        }
+      }
+    ],
+    "ordering_5": [
+      {
+        "filename": "tbb01_ordering_5_conf0.96.jpg",
+        "text": "Lin Chin-Ming",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.98742,
+        "lines": [
+          {
+            "text": "Lin Chin-Ming",
+            "score": 0.98742,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 296.1,
+                "y": 115.14999999999999,
+                "text": "Lin Chin-Ming",
+                "score": 0.98742,
+                "box": [
+                  [
+                    48.56666666666666,
+                    67.36666666666666
+                  ],
+                  [
+                    543.6333333333333,
+                    67.36666666666666
+                  ],
+                  [
+                    543.6333333333333,
+                    162.93333333333334
+                  ],
+                  [
+                    48.56666666666666,
+                    162.93333333333334
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 354.0,
+          "y": 551.0,
+          "width": 1504.0,
+          "height": 153.0
+        }
+      }
+    ],
+    "recive_account_9": [
+      {
+        "filename": "tbb01_recive_account_9_conf0.95.jpg",
+        "text": "27875788",
+        "yolo_confidence": 0.95,
+        "ocr_confidence": 0.96819,
+        "lines": [
+          {
+            "text": "27875788",
+            "score": 0.96819,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 551.1484375,
+                "y": 110.22968749999998,
+                "text": "27875788",
+                "score": 0.96819,
+                "box": [
+                  [
+                    359.6145833333333,
+                    67.23229166666667
+                  ],
+                  [
+                    742.6822916666666,
+                    64.10520833333334
+                  ],
+                  [
+                    742.6822916666666,
+                    153.22708333333333
+                  ],
+                  [
+                    359.6145833333333,
+                    156.35416666666666
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 339.0,
+          "y": 1540.0,
+          "width": 1373.0,
+          "height": 95.0
+        }
+      }
+    ],
+    "recive_address_3": [
+      {
+        "filename": "tbb01_recive_address_3_conf0.97_line1.jpg",
+        "text": "456 Elm St., New York",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.91731,
+        "lines": [
+          {
+            "text": "456 Elm St., New York",
+            "score": 0.91731,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 656.5999999999999,
+                "y": 46.141666666666666,
+                "text": "456 Elm St., New York",
+                "score": 0.91731,
+                "box": [
+                  [
+                    325.0333333333333,
+                    4.8999999999999995
+                  ],
+                  [
+                    986.5333333333333,
+                    0.0
+                  ],
+                  [
+                    988.1666666666666,
+                    81.66666666666667
+                  ],
+                  [
+                    326.6666666666667,
+                    98.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 168.0,
+          "y": 1791.0,
+          "width": 1568.0,
+          "height": 266.0
+        }
+      },
+      {
+        "filename": "tbb01_recive_address_3_conf0.97_line2.jpg",
+        "text": "New York,USA t1212-555-1234",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.87775,
+        "lines": [
+          {
+            "text": "New York,USA",
+            "score": 0.88642,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 737.45,
+                "y": 47.36666666666667,
+                "text": "New York,USA",
+                "score": 0.88642,
+                "box": [
+                  [
+                    511.23333333333335,
+                    9.799999999999999
+                  ],
+                  [
+                    962.0333333333333,
+                    1.6333333333333333
+                  ],
+                  [
+                    963.6666666666666,
+                    84.93333333333334
+                  ],
+                  [
+                    512.8666666666667,
+                    93.1
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "text": "t1212-555-1234",
+            "score": 0.86908,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 1,
+                "x": 548.8,
+                "y": 122.5,
+                "text": "t1212-555-1234",
+                "score": 0.86908,
+                "box": [
+                  [
+                    325.0333333333333,
+                    84.93333333333334
+                  ],
+                  [
+                    770.9333333333333,
+                    76.76666666666667
+                  ],
+                  [
+                    772.5666666666666,
+                    160.06666666666666
+                  ],
+                  [
+                    326.6666666666667,
+                    168.23333333333332
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 168.0,
+          "y": 1791.0,
+          "width": 1568.0,
+          "height": 266.0
+        }
+      }
+    ],
+    "swift_code_7": [
+      {
+        "filename": "tbb01_swift_code_7_conf0.96.jpg",
+        "text": "BOFAUS3N",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.94474,
+        "lines": [
+          {
+            "text": "BOFAUS3N",
+            "score": 0.94474,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 211.05,
+                "y": 38.587500000000006,
+                "text": "BOFAUS3N",
+                "score": 0.94474,
+                "box": [
+                  [
+                    38.85,
+                    3.1500000000000004
+                  ],
+                  [
+                    381.15000000000003,
+                    0.0
+                  ],
+                  [
+                    383.25,
+                    71.4
+                  ],
+                  [
+                    40.95,
+                    79.80000000000001
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 710.0,
+          "y": 1243.0,
+          "width": 1008.0,
+          "height": 72.0
+        }
+      }
+    ]
+  }
+}

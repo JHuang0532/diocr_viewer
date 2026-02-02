@@ -1,0 +1,777 @@
+{
+  "timestamp": "2026-02-02T17:14:24.375710",
+  "image_path": "Z:\\DataSet\\banking\\tbb_pdf\\tbb10.jpg",
+  "image_size": {
+    "width": 2464,
+    "height": 3459,
+    "depth": 3
+  },
+  "ocr_service": "batch_ocr_api",
+  "ocr_image_type": "bbox",
+  "ocr_data": {
+    "amount_6": [
+      {
+        "filename": "tbb10_amount_6_conf0.96.jpg",
+        "text": "USD30712.5",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.99921,
+        "lines": [
+          {
+            "text": "USD30712.5",
+            "score": 0.99921,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 131.5,
+                "y": 87.0,
+                "text": "USD30712.5",
+                "score": 0.99921,
+                "box": [
+                  [
+                    24.0,
+                    65.0
+                  ],
+                  [
+                    239.0,
+                    65.0
+                  ],
+                  [
+                    239.0,
+                    109.0
+                  ],
+                  [
+                    24.0,
+                    109.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 118.0,
+          "y": 2315.0,
+          "width": 444.0,
+          "height": 118.0
+        }
+      }
+    ],
+    "benrficiary_7": [
+      {
+        "filename": "tbb10_benrficiary_7_conf0.96.jpg",
+        "text": "TOP BEST ENERGY STORAGE CORP.",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.96002,
+        "lines": [
+          {
+            "text": "TOP BEST ENERGY STORAGE CORP.",
+            "score": 0.96002,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 465.8625,
+                "y": 66.88125000000001,
+                "text": "TOP BEST ENERGY STORAGE CORP.",
+                "score": 0.96002,
+                "box": [
+                  [
+                    161.4375,
+                    39.975
+                  ],
+                  [
+                    770.2875,
+                    36.9
+                  ],
+                  [
+                    770.2875,
+                    93.78750000000001
+                  ],
+                  [
+                    161.4375,
+                    96.8625
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 208.0,
+          "y": 1671.0,
+          "width": 1476.0,
+          "height": 145.0
+        }
+      }
+    ],
+    "branch_address_3": [
+      {
+        "filename": "tbb10_branch_address_3_conf0.96_line1.jpg",
+        "text": "HUA NAN COMMERCIAL BANK LTD.",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.9551,
+        "lines": [
+          {
+            "text": "HUA NAN COMMERCIAL BANK LTD.",
+            "score": 0.9551,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 318.390625,
+                "y": 106.3890625,
+                "text": "HUA NAN COMMERCIAL BANK LTD.",
+                "score": 0.9551,
+                "box": [
+                  [
+                    27.95625,
+                    82.315625
+                  ],
+                  [
+                    608.825,
+                    80.7625
+                  ],
+                  [
+                    608.825,
+                    130.4625
+                  ],
+                  [
+                    27.95625,
+                    132.015625
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 197.0,
+          "y": 1321.0,
+          "width": 1491.0,
+          "height": 255.0
+        }
+      },
+      {
+        "filename": "tbb10_branch_address_3_conf0.96_line2.jpg",
+        "text": "HISCHIH BRANCH TAIWAN",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.98561,
+        "lines": [
+          {
+            "text": "HISCHIH BRANCH",
+            "score": 0.97991,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 174.7265625,
+                "y": 32.615625,
+                "text": "HISCHIH BRANCH",
+                "score": 0.97991,
+                "box": [
+                  [
+                    24.85,
+                    7.765625
+                  ],
+                  [
+                    324.603125,
+                    7.765625
+                  ],
+                  [
+                    324.603125,
+                    57.465625
+                  ],
+                  [
+                    24.85,
+                    57.465625
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "text": "TAIWAN",
+            "score": 0.99131,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 1,
+                "x": 1203.671875,
+                "y": 89.3046875,
+                "text": "TAIWAN",
+                "score": 0.99131,
+                "box": [
+                  [
+                    1143.1,
+                    63.678125
+                  ],
+                  [
+                    1264.24375,
+                    63.678125
+                  ],
+                  [
+                    1264.24375,
+                    114.93125
+                  ],
+                  [
+                    1143.1,
+                    114.93125
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 197.0,
+          "y": 1321.0,
+          "width": 1491.0,
+          "height": 255.0
+        }
+      }
+    ],
+    "cust_account_4": [
+      {
+        "filename": "tbb10_cust_account_4_conf0.96.jpg",
+        "text": "12252024563",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.99958,
+        "lines": [
+          {
+            "text": "12252024563",
+            "score": 0.99958,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 179.5,
+                "y": 107.75,
+                "text": "12252024563",
+                "score": 0.99958,
+                "box": [
+                  [
+                    64.0,
+                    83.0
+                  ],
+                  [
+                    295.0,
+                    80.0
+                  ],
+                  [
+                    295.0,
+                    133.0
+                  ],
+                  [
+                    64.0,
+                    135.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 1139.0,
+          "y": 871.0,
+          "width": 683.0,
+          "height": 60.0
+        }
+      }
+    ],
+    "cust_address_10": [
+      {
+        "filename": "tbb10_cust_address_10_conf0.95.jpg",
+        "text": "Rm605i,6F.,No.53, Mincyuan Rd., Yonghe Dist.. New Taipei City 234621, Taiwan (R.O.C)",
+        "yolo_confidence": 0.95,
+        "ocr_confidence": 0.89873,
+        "lines": [
+          {
+            "text": ":Rm605i,6F.,No.53, Mincyuan Rd., Yonghe Dist..",
+            "score": 0.86484,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 501.28020833333335,
+                "y": 78.91875,
+                "text": ":Rm605i,6F.,No.53, Mincyuan Rd., Yonghe Dist..",
+                "score": 0.86484,
+                "box": [
+                  [
+                    10.230208333333334,
+                    51.151041666666664
+                  ],
+                  [
+                    992.3302083333333,
+                    51.151041666666664
+                  ],
+                  [
+                    992.3302083333333,
+                    106.68645833333333
+                  ],
+                  [
+                    10.230208333333334,
+                    106.68645833333333
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "text": "New Taipei City 234621, Taiwan (R.O.C)",
+            "score": 0.93262,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 1,
+                "x": 794.3026041666666,
+                "y": 120.93567708333333,
+                "text": "New Taipei City 234621, Taiwan (R.O.C)",
+                "score": 0.93262,
+                "box": [
+                  [
+                    321.5208333333333,
+                    94.99479166666666
+                  ],
+                  [
+                    1267.084375,
+                    90.61041666666667
+                  ],
+                  [
+                    1267.084375,
+                    149.06875
+                  ],
+                  [
+                    321.5208333333333,
+                    149.06875
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 417.0,
+          "y": 728.0,
+          "width": 1403.0,
+          "height": 140.0
+        }
+      }
+    ],
+    "detail_of_payment_1": [
+      {
+        "filename": "tbb10_detail_of_payment_1_conf0.97.jpg",
+        "text": "Payment",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.99723,
+        "lines": [
+          {
+            "text": "Payment",
+            "score": 0.99723,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 113.346875,
+                "y": 138.80885416666666,
+                "text": "Payment",
+                "score": 0.99723,
+                "box": [
+                  [
+                    31.211458333333333,
+                    108.41875
+                  ],
+                  [
+                    195.48229166666667,
+                    108.41875
+                  ],
+                  [
+                    195.48229166666667,
+                    169.19895833333334
+                  ],
+                  [
+                    31.211458333333333,
+                    169.19895833333334
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 100.0,
+          "y": 2080.0,
+          "width": 1577.0,
+          "height": 165.0
+        }
+      }
+    ],
+    "id_no_8": [
+      {
+        "filename": "tbb10_id_no_8_conf0.95.jpg",
+        "text": "83467777",
+        "yolo_confidence": 0.95,
+        "ocr_confidence": 0.99234,
+        "lines": [
+          {
+            "text": "83467777",
+            "score": 0.99234,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 202.25,
+                "y": 130.5,
+                "text": "83467777",
+                "score": 0.99234,
+                "box": [
+                  [
+                    80.0,
+                    105.0
+                  ],
+                  [
+                    321.0,
+                    91.0
+                  ],
+                  [
+                    325.0,
+                    156.0
+                  ],
+                  [
+                    83.0,
+                    170.0
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 440.0,
+          "y": 881.0,
+          "width": 374.0,
+          "height": 118.0
+        }
+      }
+    ],
+    "name_ch_2": [
+      {
+        "filename": "tbb10_name_ch_2_conf0.97.jpg",
+        "text": "伊司埃歐特科技（股）公司",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.95147,
+        "lines": [
+          {
+            "text": "伊司埃歐特科技（股）公司",
+            "score": 0.95147,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 308.171875,
+                "y": 159.60416666666666,
+                "text": "伊司埃歐特科技（股）公司",
+                "score": 0.95147,
+                "box": [
+                  [
+                    49.23958333333333,
+                    132.4375
+                  ],
+                  [
+                    565.40625,
+                    113.76041666666666
+                  ],
+                  [
+                    567.1041666666666,
+                    186.77083333333331
+                  ],
+                  [
+                    50.93749999999999,
+                    205.44791666666666
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 322.0,
+          "y": 454.0,
+          "width": 1502.0,
+          "height": 131.0
+        }
+      }
+    ],
+    "ordering_9": [
+      {
+        "filename": "tbb10_ordering_9_conf0.95.jpg",
+        "text": "SSIOT TECH CORPORATION",
+        "yolo_confidence": 0.95,
+        "ocr_confidence": 0.93915,
+        "lines": [
+          {
+            "text": "SSIOT TECH CORPORATION",
+            "score": 0.93915,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 263.5,
+                "y": 77.5,
+                "text": "SSIOT TECH CORPORATION",
+                "score": 0.93915,
+                "box": [
+                  [
+                    10.85,
+                    35.65
+                  ],
+                  [
+                    517.7,
+                    46.5
+                  ],
+                  [
+                    516.15,
+                    119.35000000000001
+                  ],
+                  [
+                    9.3,
+                    108.5
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 335.0,
+          "y": 581.0,
+          "width": 1488.0,
+          "height": 145.0
+        }
+      }
+    ],
+    "recive_account_11": [
+      {
+        "filename": "tbb10_recive_account_11_conf0.94.jpg",
+        "text": ".102970222698",
+        "yolo_confidence": 0.94,
+        "ocr_confidence": 0.97351,
+        "lines": [
+          {
+            "text": ".102970222698",
+            "score": 0.97351,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 229.13020833333331,
+                "y": 139.05833333333334,
+                "text": ".102970222698",
+                "score": 0.97351,
+                "box": [
+                  [
+                    90.07187499999999,
+                    113.77499999999999
+                  ],
+                  [
+                    368.18854166666665,
+                    113.77499999999999
+                  ],
+                  [
+                    368.18854166666665,
+                    164.34166666666667
+                  ],
+                  [
+                    90.07187499999999,
+                    164.34166666666667
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 323.0,
+          "y": 1572.0,
+          "width": 1389.0,
+          "height": 96.0
+        }
+      }
+    ],
+    "recive_address_0": [
+      {
+        "filename": "tbb10_recive_address_0_conf0.97_line1.jpg",
+        "text": "NO, 101 CHUNG-CHENG ROAD, HIS CHIH DIST.",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.92344,
+        "lines": [
+          {
+            "text": "NO, 101 CHUNG-CHENG ROAD, HIS CHIH DIST.",
+            "score": 0.92344,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 426.2708333333333,
+                "y": 96.35416666666666,
+                "text": "NO, 101 CHUNG-CHENG ROAD, HIS CHIH DIST.",
+                "score": 0.92344,
+                "box": [
+                  [
+                    10.791666666666666,
+                    72.45833333333333
+                  ],
+                  [
+                    841.75,
+                    67.83333333333333
+                  ],
+                  [
+                    841.75,
+                    120.25
+                  ],
+                  [
+                    10.791666666666666,
+                    124.875
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 215.0,
+          "y": 1817.0,
+          "width": 1480.0,
+          "height": 258.0
+        }
+      },
+      {
+        "filename": "tbb10_recive_address_0_conf0.97_line2.jpg",
+        "text": "NEWTAIPEICITY",
+        "yolo_confidence": 0.97,
+        "ocr_confidence": 0.82131,
+        "lines": [
+          {
+            "text": "…:NEWTAIPEICITY",
+            "score": 0.82131,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 518.0,
+                "y": 28.90625,
+                "text": "…:NEWTAIPEICITY",
+                "score": 0.82131,
+                "box": [
+                  [
+                    296.0,
+                    7.708333333333333
+                  ],
+                  [
+                    738.4583333333333,
+                    0.0
+                  ],
+                  [
+                    740.0,
+                    49.33333333333333
+                  ],
+                  [
+                    297.54166666666663,
+                    58.58333333333333
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 215.0,
+          "y": 1817.0,
+          "width": 1480.0,
+          "height": 258.0
+        }
+      }
+    ],
+    "swift_code_5": [
+      {
+        "filename": "tbb10_swift_code_5_conf0.96.jpg",
+        "text": "HNBKIWTP",
+        "yolo_confidence": 0.96,
+        "ocr_confidence": 0.93021,
+        "lines": [
+          {
+            "text": ":HNBKIWTP",
+            "score": 0.93021,
+            "box": null,
+            "x": null,
+            "y": null,
+            "items": [
+              {
+                "index": 0,
+                "x": 109.96927083333333,
+                "y": 29.899479166666666,
+                "text": ":HNBKIWTP",
+                "score": 0.93021,
+                "box": [
+                  [
+                    9.121875,
+                    7.094791666666667
+                  ],
+                  [
+                    210.81666666666666,
+                    5.067708333333333
+                  ],
+                  [
+                    210.81666666666666,
+                    52.704166666666666
+                  ],
+                  [
+                    9.121875,
+                    54.731249999999996
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "origin_offset": {
+          "x": 700.0,
+          "y": 1239.0,
+          "width": 973.0,
+          "height": 89.0
+        }
+      }
+    ]
+  }
+}
